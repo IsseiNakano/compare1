@@ -3,6 +3,7 @@ class ParetoSolution {
   int[][][] weight1 ;
   PathVec[] pareto ;
   PathVecp[] pareto1 ;
+  PathVecl[] labelpareto ;
   Vector singlelabel ;
    ParetoSolution(int[] m) {
     weight = instanceText(m) ;
@@ -10,12 +11,38 @@ class ParetoSolution {
     // weight = randomWeight() ;
     pareto = new PathVec[nodenum] ;
     pareto1 = new PathVecp[nodenum] ;
-    for(int j = 0 ; j < nodenum ; j++)
-      pareto[j] = new PathVec(j, weight[j]) ;
-    for(int j = 0 ; j < nodenum ; j++)
-      pareto1[j] = new PathVecp(j, weight1[j]) ;
+    labelpareto = new PathVecl[nodenum] ;
+    for(int j = 0 ; j < nodenum ; j++)  pareto[j] = new PathVec(j, weight[j]) ;
+    for(int j = 0 ; j < nodenum ; j++)  pareto1[j] = new PathVecp(j, weight1[j]) ;
+    for(int j = 0 ; j < nodenum ; j++)  labelpareto[j] = new PathVecl(j, weight1[j]) ;
     singlelabel = new Vector() ;
   }
+
+
+  void labeling() {
+   int time = Integer.MAX_VALUE ; ;
+   for(int i = 0 ; i < experimentNum ; i++)
+     time = min(time, labelingup()) ;
+   println(lengl()+","+time) ;
+  }
+  int labelingup() {
+    reset() ;
+    int start = millis() ;
+    labelpareto[0].add(new int[objective]) ;
+    labelpareto[0].update = true ;
+    boolean flag = true ;
+    while(flag) {
+      flag = false ;
+      for(PathVecl ps : labelpareto) {
+        for(PathVecl pps : labelpareto)
+          if(ps.index != pps.index)
+          if(ps.paretoConstruction(pps)) flag = true ;
+        ps.update = true ;
+      }
+    }
+    return millis() - start ;
+  }
+
 
   void propose1() {
    int time = Integer.MAX_VALUE ; ;
@@ -70,6 +97,8 @@ class ParetoSolution {
       vs.reset() ;
     for (PathVecp vs : pareto1)
       vs.reset() ;
+    for (PathVecl vs : labelpareto)
+      vs.reset() ;
     singlelabel.clear() ;
   }
   int leng() {
@@ -81,6 +110,12 @@ class ParetoSolution {
   int leng1() {
     int count = 0 ;
     for(PathVecp ps : pareto1)
+     count += ps.leng() ;
+    return count ;
+  }
+  int lengl() {
+    int count = 0 ;
+    for(PathVecl ps : labelpareto)
      count += ps.leng() ;
     return count ;
   }

@@ -9,7 +9,7 @@ String dirF = "/Users/nakano/Desktop/data500/" ;
 final int nodenum = 500 ;
 final int bound = 300 ;
 final int objective = 3 ;
-final int experimentNum = 10 ;
+final int experimentNum = 3 ;
 final int maxint = 99999 ;
 boolean negativeobj[] = new boolean[objective] ;
 int inpath = 0 ;
@@ -20,7 +20,7 @@ void setup() {
   ParetoSolution p = new ParetoSolution(m) ;
   // p.dijkstra() ;
   // p.polynomial() ;
-  // p.labeling() ;
+  p.labeling() ;
   p.propose1() ;
   p.propose2() ;
   exit() ;
